@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace GridMaster
 {
@@ -16,7 +16,7 @@ namespace GridMaster
         public float offsetY = 1;
         public float offsetZ = 1;
 
-        public Node[, ,] grid; // our grid
+        public Node[,,] grid; // our grid
 
         public GameObject gridFloorPrefab;
 
@@ -53,14 +53,14 @@ namespace GridMaster
                         node.y = y;
                         node.z = z;
                         node.worldObject = go;
-                        
-                         //BoxCastAll is only Unity 5.3+ remove this and it will play on all versions 5+
+
+                        //BoxCastAll is only Unity 5.3+ remove this and it will play on all versions 5+
                         //in theory it should play with every Unity version, but i haven't tested it
-                        RaycastHit[] hits = Physics.BoxCastAll(new Vector3(posX, posY, posZ), new Vector3(1,0,1), Vector3.forward);
+                        RaycastHit[] hits = Physics.BoxCastAll(new Vector3(posX, posY, posZ), new Vector3(1, 0, 1), Vector3.forward);
 
                         for (int i = 0; i < hits.Length; i++)
                         {
-                            node.isWalkable = false;           
+                            node.isWalkable = false;
                         }
 
                         //then place it to the grid
@@ -74,15 +74,15 @@ namespace GridMaster
         public bool start;
         void Update()
         {
-            if(start)
+            if (start)
             {
                 start = false;
                 //Create the new pathfinder class
-               // Pathfinding.Pathfinder path = new Pathfinding.Pathfinder();
-                
+                // Pathfinding.Pathfinder path = new Pathfinding.Pathfinder();
+
                 //to test the avoidance, just make a node unwalkable
                 grid[1, 0, 1].isWalkable = false;
-                
+
                 //pass the target nodes
                 Node startNode = GetNodeFromVector3(startNodePosition);
                 Node end = GetNodeFromVector3(endNodePosition);
@@ -97,18 +97,22 @@ namespace GridMaster
                 for (int i = 0; i < agents; i++)
                 {
                     Pathfinding.PathfindMaster.GetInstance().RequestPathfind(startNode, end, ShowPath);
-                }             
+                }
             }
         }
 
         public void ShowPath(List<Node> path)
         {
-            foreach (Node n in path)
-            {
-                n.worldObject.SetActive(false);
-            }
+            //PathFollower pathFol = new PathFollower();
 
-            //Debug.Log("agent complete");
+            PathFollower pathFol = GameObject.Find("PathFollower").GetComponent<PathFollower>();
+
+
+            for (int i = 0; i < path.Count; i++)
+            {
+                path[i].worldObject.SetActive(false);
+                pathFol.addToMyPath(path[i].worldObject.transform);
+            }
         }
 
         public Node GetNode(int x, int y, int z)

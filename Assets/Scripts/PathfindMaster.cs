@@ -34,8 +34,8 @@ namespace Pathfinding
             currentJobs = new List<Pathfinder>();
             todoJobs = new List<Pathfinder>();
         }
-   
-        void Update() 
+
+        void Update()
         {
             /*
              * Another way to keep track of the threads we have open would have been to create 
@@ -45,9 +45,9 @@ namespace Pathfinding
 
             int i = 0;
 
-            while(i < currentJobs.Count)
+            while (i < currentJobs.Count)
             {
-                if(currentJobs[i].jobDone)
+                if (currentJobs[i].jobDone)
                 {
                     currentJobs[i].NotifyComplete();
                     currentJobs.RemoveAt(i);
@@ -58,7 +58,7 @@ namespace Pathfinding
                 }
             }
 
-            if(todoJobs.Count > 0 && currentJobs.Count < MaxJobs)
+            if (todoJobs.Count > 0 && currentJobs.Count < MaxJobs)
             {
                 Pathfinder job = todoJobs[0];
                 todoJobs.RemoveAt(0);
